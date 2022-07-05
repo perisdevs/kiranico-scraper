@@ -11,6 +11,7 @@ export function scrapeResponseForGreatSwords(response) {
 
     rows.forEach((row) => {
         let weaponObj = scrapeRowForWeaponProps(row, StandardIndeces);
+        weaponObj.type = 'greatSword';
         downloadWeapon('data/great_swords', weaponObj);
     });
 }
@@ -23,6 +24,7 @@ export function scrapeResponseForSwordAndShield(response) {
 
     rows.forEach((row) => {
         let weaponObj = scrapeRowForWeaponProps(row, StandardIndeces);
+        weaponObj.type = 'swordAndShield';
         downloadWeapon('data/sword_and_shields', weaponObj);
     });
 }
@@ -35,6 +37,7 @@ export function scrapeResponseForDualBlades(response) {
 
     rows.forEach((row) => {
         let weaponObj = scrapeRowForWeaponProps(row, StandardIndeces);
+        weaponObj.type = 'dualBlade';
         downloadWeapon('data/dual_blades', weaponObj);
     });
 }
@@ -47,6 +50,7 @@ export function scrapeResponseForHammers(response) {
 
     rows.forEach((row) => {
         let weaponObj = scrapeRowForWeaponProps(row, StandardIndeces);
+        weaponObj.type = 'hammer';
         downloadWeapon('data/hammers', weaponObj);
     });
 }
@@ -59,6 +63,7 @@ export function scrapeResponseForLongSwords(response) {
 
     rows.forEach((row) => {
         let weaponObj = scrapeRowForWeaponProps(row, StandardIndeces);
+        weaponObj.type = 'longSword';
         downloadWeapon('data/long_swords', weaponObj);
     });
 }
@@ -71,6 +76,7 @@ export function scrapeResponseForHuntingHorns(response) {
 
     rows.forEach((row) => {
         let weaponObj = scrapeRowForWeaponProps(row, HuntingHornIndeces);
+        weaponObj.type = 'huntingHorn';
         weaponObj.melodies = scrapeRowForMelodies(row, HuntingHornIndeces);
         downloadWeapon('data/hunting_horns', weaponObj);
     });
@@ -84,6 +90,7 @@ export function scrapeResponseForLances(response) {
 
     rows.forEach((row) => {
         let weaponObj = scrapeRowForWeaponProps(row, StandardIndeces);
+        weaponObj.type = 'lance';
         downloadWeapon('data/lances', weaponObj);
     });
 }
@@ -96,6 +103,7 @@ export function scrapeResponseForGunlances(response) {
 
     rows.forEach((row) => {
         let weaponObj = scrapeRowForWeaponProps(row, GunlanceIndeces);
+        weaponObj.type = 'gunlance';
         weaponObj.shell = scrapeRowForShell(row, GunlanceIndeces);
         downloadWeapon('data/gunlances', weaponObj);
     });
@@ -109,6 +117,7 @@ export function scrapeResponseForSwitchAxes(response) {
 
     rows.forEach((row) => {
         let weaponObj = scrapeRowForWeaponProps(row, PhialIndeces);
+        weaponObj.type = 'switchAxe';
         weaponObj.phial = scrapeRowForPhial(row, PhialIndeces);
         downloadWeapon('data/switch_axes', weaponObj);
     });
@@ -122,6 +131,7 @@ export function scrapeResponseForChargeBlades(response) {
 
     rows.forEach((row) => {
         let weaponObj = scrapeRowForWeaponProps(row, PhialIndeces);
+        weaponObj.type = 'chargeBlade';
         weaponObj.phial = scrapeRowForPhial(row, PhialIndeces);
         downloadWeapon('data/charge_blades', weaponObj);
     });
@@ -135,6 +145,7 @@ export function scrapeResponseForInsectGlaives(response) {
 
     rows.forEach((row) => {
         let weaponObj = scrapeRowForWeaponProps(row, InsectGlaiveIndeces);
+        weaponObj.type = 'insectGlaive';
         weaponObj.kinsect = scrapeRowForKinsect(row, InsectGlaiveIndeces);
         downloadWeapon('data/insect_glaives', weaponObj);
     });
@@ -148,6 +159,7 @@ export function scrapeResponseForBows(response) {
 
     rows.forEach((row) => {
         let weaponObj = scrapeRowForWeaponProps(row, BowIndeces);
+        weaponObj.type = 'bow';
         weaponObj.chargeShots = scrapeRowForChargeShots(row, BowIndeces);
         weaponObj.coatings = scrapeRowForCoatings(row, BowIndeces);
         downloadWeapon('data/bows', weaponObj);
@@ -161,7 +173,8 @@ export function scrapeResponseForHeavyBowguns(response) {
     let rows = Array.from(table.children);
 
     rows.forEach((row) => {
-        let weaponObj = scrapeRowForWeaponProps(row, BowgunIndeces);        
+        let weaponObj = scrapeRowForWeaponProps(row, BowgunIndeces);    
+        weaponObj.type = 'heavyBowgun';    
         downloadWeapon('data/heavy_bowguns', weaponObj);
     });
 }
@@ -173,7 +186,8 @@ export function scrapeResponseForLightBowguns(response) {
     let rows = Array.from(table.children);
 
     rows.forEach((row) => {
-        let weaponObj = scrapeRowForWeaponProps(row, BowgunIndeces);        
+        let weaponObj = scrapeRowForWeaponProps(row, BowgunIndeces);  
+        weaponObj.type = 'lightBowgun';      
         downloadWeapon('data/light_bowguns', weaponObj);
     });
 }
@@ -241,15 +255,18 @@ function scrapeRowForWeaponProps(row, indeces) {
     let slotContainer = Array.from(weaponInfo[indeces.Skills].children)[0];
     if(slotContainer.children) {            
         Array.from(slotContainer.children).forEach((slot) => {
-            let level = parseInt(slot.getAttribute('src').match(/\d/)[0]);
-            slotLevels.push(level);
+            if (slot.textContent === 'Slots') return;
+            if (slot.getAttribute('src')) {
+                let level = parseInt(slot.getAttribute('src').match(/\d/)[0]);
+                slotLevels.push(level);
+            }            
         });
     }
 
     let rampageSlotContainer = Array.from(weaponInfo[indeces.Skills].children)[1];
     let rampageSlot = null;
-    if (rampageSlotContainer.firstChild) {
-        rampageSlot = parseInt(rampageSlotContainer.firstChild.getAttribute('src').match(/\d/)[0]);
+    if (rampageSlotContainer.querySelector('img')) {
+        rampageSlot = parseInt(rampageSlotContainer.querySelector('img').getAttribute('src').match(/\d/)[0]);
     }
 
     let damage = parseInt(weaponInfo[indeces.Damage].textContent);

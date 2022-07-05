@@ -40,3 +40,22 @@ export class Scrape {
         return this.scrapingFunction(response);
     }
 }
+
+export class Scraper {
+    constructor() {
+        this.scrapes = [];
+    }
+
+    addScrape(scrape) {
+        this.scrapes.push(scrape);
+    }
+
+    scrapeAll() {
+        let interval = setInterval(() => {            
+            console.log('beginning interval');
+            this.scrapes[0].scrape();
+            this.scrapes.shift();               
+            if (this.scrapes[0] == undefined) clearInterval(interval);   
+        }, 1000);
+    }
+}

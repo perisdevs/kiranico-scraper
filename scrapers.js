@@ -52,7 +52,7 @@ export class Scraper {
 
     scrapeAll() {
         let interval = setInterval(() => {            
-            console.log('beginning interval');
+            console.log('Beginning scrape');
             this.scrapes[0].scrape();
             this.scrapes.shift();               
             if (this.scrapes[0] == undefined) clearInterval(interval);   

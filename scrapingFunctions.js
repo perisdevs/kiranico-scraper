@@ -252,16 +252,11 @@ function scrapeRowForWeaponProps(row, indeces) {
     let name = weaponInfo[indeces.Name].textContent.replace(/▣/, '').trim();
     
     let slotLevels = [];
-    let slotContainer = Array.from(weaponInfo[indeces.Skills].children)[0];
-    if(slotContainer.children) {            
-        Array.from(slotContainer.children).forEach((slot) => {
-            if (slot.textContent === 'Slots') return;
-            if (slot.getAttribute('src')) {
-                let level = parseInt(slot.getAttribute('src').match(/\d/)[0]);
-                slotLevels.push(level);
-            }            
-        });
-    }
+    let slotContainers = Array.from(Array.from(weaponInfo[indeces.Skills].children)[0].querySelectorAll('img'));
+    slotContainers.forEach((slot) => {
+        let level = parseInt(slot.getAttribute('src').match(/\d/)[0]);        
+        slotLevels.push(level);
+    });        
 
     let rampageSlotContainer = Array.from(weaponInfo[indeces.Skills].children)[1];
     let rampageSlot = null;
